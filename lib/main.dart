@@ -5,7 +5,7 @@ import 'core/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // Firebase পরে কানেক্ট করবো await Firebase.initializeApp();
   runApp(const RedLoopApp());
 }
 
