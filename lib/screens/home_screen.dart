@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
               ),
               child: const Column(
                 children: [
-                  Text('🩸', style: TextStyle(fontSize: 50)),
+                  Icon(Icons.bloodtype, size: 50, color: Colors.red),
                   SizedBox(height: 10),
                   Text('রক্ত দরকার?',
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -50,4 +50,21 @@ class HomeScreen extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: () => Navigator.pushNamed(context, Routes.donorSearch),
               icon: const Icon(Icons.search),
-              label: const Text('ডোনার
+              label: const Text('ডোনার খুঁজুন'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.pushNamed(context, Routes.donorRegister),
+              icon: const Icon(Icons.favorite),
+              label: const Text('ডোনার হিসেবে রেজিস্টার করুন'),
+            ),
+            const Spacer(),
+            const Text('RedLoop - Dhaka, Bangladesh',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey)),
+          ],
+        ),
+      ),
+    );
+  }
+}
