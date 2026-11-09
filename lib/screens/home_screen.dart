@@ -31,14 +31,12 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Text('🩸', style: TextStyle(fontSize: 50)),
                   SizedBox(height: 10),
-                  Text('রক্ত দরকার? SOS পাঠান',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
+                  Text('রক্ত দরকার?',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center),
                   SizedBox(height: 8),
-                  Text('আশেপাশের ডোনারদের কাছে ১০ সেকেন্ডে নোটিফিকেশন যাবে',
-                    textAlign: TextAlign.center,
-                  ),
+                  Text('একজন ডোনার খুঁজুন বা SOS পাঠান, কাছাকাছি ডোনাররা এগিয়ে আসবে',
+                      textAlign: TextAlign.center),
                 ],
               ),
             ),
@@ -46,28 +44,10 @@ class HomeScreen extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => Navigator.pushNamed(context, Routes.sosRequest),
               icon: const Icon(Icons.emergency),
-              label: const Text('SOS - জরুরি রক্ত চাই'),
+              label: const Text('SOS পাঠান - রক্ত দরকার'),
             ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(context, Routes.donorSearch),
               icon: const Icon(Icons.search),
-              label: const Text('ডোনার খুঁজুন'),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.favorite),
-              label: const Text('ডোনার হিসেবে রেজিস্টার করুন'),
-            ),
-            const Spacer(),
-            const Text('RedLoop - Dhaka, Bangladesh',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+              label: const Text('ডোনার
