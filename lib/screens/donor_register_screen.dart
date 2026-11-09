@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../services/database_service.dart';
+import '../services/notification_service.dart';
 
 class DonorRegisterScreen extends StatefulWidget {
   const DonorRegisterScreen({super.key});
@@ -12,6 +14,23 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
   final areaC = TextEditingController();
   String blood = 'O+';
   final groups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+
+  Future<void> register() async {
+    if (nameC.text.isEmpty || phoneC.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('নাম আর মোবাইল নম্বর দিন')));
+      return;
+    }
+    await DatabaseService.saveDonor({
+      'name': nameC.text,
+      'blood': blood,
+      'area': areaC.text.isEmpty ? 'ঢাকা' : areaC.text,
+      'phone': phoneC.text,
+    });
+    await NotificationService.showWelcome(nameC.text);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('ধন্যবাদ! রেজিস্ট্রেশন সফল হয়েছে')));
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +57,7 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  if (nameC.text.isEmpty || phoneC.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('নাম আর মোবাইল নম্বর দিন')));
-                    return;
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('ধন্যবাদ! রেজিস্ট্রেশন সফল হয়েছে')));
-                  Navigator.pop(context);
-                },
+                onPressed: register,
                 child: const Text('রেজিস্টার করুন'),
               ),
             ),
