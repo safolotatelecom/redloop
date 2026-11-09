@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'core/theme.dart';
 import 'core/routes.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Firebase পরে কানেক্ট করবো await Firebase.initializeApp();
+void main() {
   runApp(const RedLoopApp());
 }
 
