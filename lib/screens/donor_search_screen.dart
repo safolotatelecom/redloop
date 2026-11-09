@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../services/database_service.dart';
 
 class DonorSearchScreen extends StatefulWidget {
   const DonorSearchScreen({super.key});
@@ -8,14 +10,33 @@ class DonorSearchScreen extends StatefulWidget {
 
 class _DonorSearchScreenState extends State<DonorSearchScreen> {
   String selected = 'সব';
-  final donors = [
-    {'name': 'রাহিম উদ্দিন', 'blood': 'O+', 'area': 'ঢাকা - মিরপুর', 'phone': '01711-123456'},
-    {'name': 'সুমাইয়া আক্তার', 'blood': 'B+', 'area': 'ঢাকা - উত্তরা', 'phone': '01811-234567'},
-    {'name': 'করিম শেখ', 'blood': 'A+', 'area': 'ঢাকা - ধানমন্ডি', 'phone': '01911-345678'},
-    {'name': 'নুসরাত জাহান', 'blood': 'O-', 'area': 'ঢাকা - মোহাম্মদপুর', 'phone': '01611-456789'},
-    {'name': 'আরিফ হোসেন', 'blood': 'AB+', 'area': 'ঢাকা - বনানী', 'phone': '01511-567890'},
-  ];
+  List<Map<String, String>> donors = [];
+  bool isLoading = true;
   final groups = ['সব', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+
+  @override
+  void initState() {
+    super.initState();
+    loadDonors();
+  }
+
+  Future<void> loadDonors() async {
+    final data = await DatabaseService.getDonors();
+    setState(() {
+      donors = data;
+      isLoading = false;
+    });
+  }
+
+  Future<void> makeCall(String phone) async {
+    final uri = Uri.parse('tel:$phone');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('কল করা যাচ্ছে না: $phone')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,28 +61,31 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
             ),
           ),
           Expanded(
-            child: list.isEmpty
-                ? const Center(child: Text('এই গ্রুপের ডোনার পাওয়া যায়নি'))
-                : ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (c, i) {
-                      final d = list[i];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        child: ListTile(
-                          leading: CircleAvatar(child: Text(d['blood']!)),
-                          title: Text(d['name']!),
-                          subtitle: Text('${d['area']}'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.call, color: Colors.green),
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('কল করছেন: ${d['phone']}')));
-                            },
-                          ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : list.isEmpty
+                    ? const Center(child: Text('এই গ্রুপের ডোনার পাওয়া যায়নি'))
+                    : RefreshIndicator(
+                        onRefresh: loadDonors,
+                        child: ListView.builder(
+                          itemCount: list.length,
+                          itemBuilder: (c, i) {
+                            final d = list[i];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              child: ListTile(
+                                leading: CircleAvatar(child: Text(d['blood'] ?? '')),
+                                title: Text(d['name'] ?? ''),
+                                subtitle: Text(d['area'] ?? ''),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.call, color: Colors.green),
+                                  onPressed: () => makeCall(d['phone'] ?? ''),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
           ),
         ],
       ),
